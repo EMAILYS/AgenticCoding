@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EMAILYS | GitHub Portfolio</title>
+    <!-- Google Fonts Outfit & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #0b0813;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --card-border-hover: rgba(168, 85, 247, 0.4);
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --accent-purple: #a855f7;
+            --accent-blue: #3b82f6;
+            --accent-orange: #f97316;
+            --glow-color: rgba(168, 85, 247, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: 'Outfit', 'Inter', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Ambient Background Glows */
+        .ambient-glow-1 {
+            position: absolute;
+            top: -10%;
+            left: -10%;
+            width: 50vw;
+            height: 50vw;
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.15) 0%, rgba(0,0,0,0) 70%);
+            z-index: -1;
+            filter: blur(80px);
+            pointer-events: none;
+        }
+
+        .ambient-glow-2 {
+            position: absolute;
+            bottom: -10%;
+            right: -10%;
+            width: 60vw;
+            height: 60vw;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.12) 0%, rgba(0,0,0,0) 70%);
+            z-index: -1;
+            filter: blur(100px);
+            pointer-events: none;
+        }
+
+        /* Container & Layout */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header Styles */
+        header {
+            text-align: center;
+            margin-bottom: 5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .profile-container {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+
+        .avatar-glow {
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+            border-radius: 50%;
+            z-index: -1;
+            animation: rotateGlow 6s linear infinite;
+        }
+
+        .avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 4px solid var(--bg-color);
+            background-color: #1f2937;
+            object-fit: cover;
+            display: block;
+        }
+
+        @keyframes rotateGlow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(to right, #ffffff, #d8b4fe, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.05em;
+        }
+
+        .github-username {
+            font-size: 1.2rem;
+            color: var(--accent-purple);
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: color 0.3s ease;
+            margin-bottom: 1.5rem;
+        }
+
+        .github-username:hover {
+            color: #c084fc;
+        }
+
+        .bio {
+            max-width: 600px;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            font-weight: 300;
+        }
+
+        /* Status Pill */
+        .api-status-pill {
+            margin-top: 1.5rem;
+            padding: 0.4rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #10b981; /* Green */
+            box-shadow: 0 0 8px #10b981;
+        }
+
+        .status-dot.fallback {
+            background-color: #f59e0b; /* Amber */
+            box-shadow: 0 0 8px #f59e0b;
+        }
+
+        /* Repositories Grid */
+        .repos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+            margin-bottom: 5rem;
+        }
+
+        /* Card Styles */
+        .repo-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 2.2rem;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+        }
+
+        .repo-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: var(--card-header-gradient, linear-gradient(to right, var(--accent-purple), var(--accent-blue)));
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+
+        .repo-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--card-border-hover);
+            box-shadow: 0 20px 40px -15px var(--glow-color);
+        }
+
+        .repo-card:hover::before {
+            opacity: 1;
+        }
+
+        .repo-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .repo-icon-wrap {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .repo-icon {
+            font-size: 1.5rem;
+            background: var(--card-header-gradient, linear-gradient(to right, var(--accent-purple), var(--accent-blue)));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .repo-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+            letter-spacing: -0.02em;
+        }
+
+        .repo-description {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            font-weight: 300;
+            min-height: 70px;
+        }
+
+        /* Repo Meta Info */
+        .repo-meta {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 1.2rem;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .lang-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        /* Card Button */
+        .btn-view {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            width: 100%;
+            padding: 0.9rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-purple), #7c3aed);
+            color: white;
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #c084fc, var(--accent-purple));
+            box-shadow: 0 6px 20px rgba(124, 58, 237, 0.5);
+            transform: translateY(-2px);
+        }
+
+        /* Specific Repo Gradients */
+        .card-agentic {
+            --card-header-gradient: linear-gradient(to right, #00f2fe, #4facfe);
+            --glow-color: rgba(79, 172, 254, 0.15);
+            --card-border-hover: rgba(79, 172, 254, 0.4);
+        }
+
+        .card-tetris {
+            --card-header-gradient: linear-gradient(to right, #f857a6, #ff5858);
+            --glow-color: rgba(248, 87, 166, 0.15);
+            --card-border-hover: rgba(248, 87, 166, 0.4);
+        }
+
+        .card-html {
+            --card-header-gradient: linear-gradient(to right, #f2994a, #f2c94c);
+            --glow-color: rgba(242, 153, 74, 0.15);
+            --card-border-hover: rgba(242, 153, 74, 0.4);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding-top: 3rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 300;
+        }
+
+        footer i {
+            color: #ef4444;
+            margin: 0 0.2rem;
+            animation: heartbeat 1.5s infinite;
+        }
+
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            .container {
+                padding: 2rem 1rem;
+            }
+            .repos-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ambient-glow-1"></div>
+    <div class="ambient-glow-2"></div>
+
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="profile-container">
+                <div class="avatar-glow"></div>
+                <img src="https://avatars.githubusercontent.com/u/144986474?v=4" alt="EMAILYS Avatar" class="avatar" id="user-avatar">
+            </div>
+            <h1 id="user-name">EMAILYS</h1>
+            <a href="https://github.com/EMAILYS" target="_blank" class="github-username">
+                <i class="fab fa-github"></i> @EMAILYS
+            </a>
+            <p class="bio" id="user-bio">
+                探索程式開發與網頁技術的開發者。這裡展示了我的 GitHub 專案與作品。
+            </p>
+            <div class="api-status-pill">
+                <div class="status-dot" id="status-dot"></div>
+                <span id="status-text">正在載入即時狀態...</span>
+            </div>
+        </header>
+
+        <!-- Repositories Grid -->
+        <div class="repos-grid" id="repos-container">
+            <!-- AgenticCoding Card -->
+            <div class="repo-card card-agentic" id="repo-AgenticCoding">
+                <div class="repo-header">
+                    <div class="repo-icon-wrap">
+                        <i class="fas fa-robot repo-icon"></i>
+                    </div>
+                    <h3 class="repo-title">AgenticCoding</h3>
+                    <p class="repo-description" id="desc-AgenticCoding">
+                        透過 AI Agent 自動化建構的個人作品集網頁，整合自動部署至 GitHub Pages 的工作流程，呈現完美的 Glassmorphism 視覺設計與流動特效。
+                    </p>
+                </div>
+                <div>
+                    <div class="repo-meta">
+                        <div class="meta-item">
+                            <span class="lang-dot" style="background-color: #f1e05a;"></span>
+                            <span>JavaScript / HTML</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="far fa-star"></i>
+                            <span id="stars-AgenticCoding">0</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-code-branch"></i>
+                            <span id="forks-AgenticCoding">0</span>
+                        </div>
+                    </div>
+                    <a href="https://github.com/EMAILYS/AgenticCoding" target="_blank" class="btn-view btn-primary">
+                        <i class="fab fa-github"></i> 瀏覽儲存庫
+                    </a>
+                </div>
+            </div>
+
+            <!-- tetris Card -->
+            <div class="repo-card card-tetris" id="repo-tetris">
+                <div class="repo-header">
+                    <div class="repo-icon-wrap">
+                        <i class="fas fa-gamepad repo-icon"></i>
+                    </div>
+                    <h3 class="repo-title">tetris</h3>
+                    <p class="repo-description" id="desc-tetris">
+                        經典俄羅斯方塊（Tetris）遊戲的 JavaScript 純前端實現，具備流暢的操作體驗、經典的消行計分規則與精緻的視覺介面。
+                    </p>
+                </div>
+                <div>
+                    <div class="repo-meta">
+                        <div class="meta-item">
+                            <span class="lang-dot" style="background-color: #f1e05a;"></span>
+                            <span>JavaScript</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="far fa-star"></i>
+                            <span id="stars-tetris">0</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-code-branch"></i>
+                            <span id="forks-tetris">0</span>
+                        </div>
+                    </div>
+                    <a href="https://github.com/EMAILYS/tetris" target="_blank" class="btn-view btn-primary">
+                        <i class="fab fa-github"></i> 瀏覽儲存庫
+                    </a>
+                </div>
+            </div>
+
+            <!-- html Card -->
+            <div class="repo-card card-html" id="repo-html">
+                <div class="repo-header">
+                    <div class="repo-icon-wrap">
+                        <i class="fas fa-code repo-icon"></i>
+                    </div>
+                    <h3 class="repo-title">html</h3>
+                    <p class="repo-description" id="desc-html">
+                        HTML 基礎網頁實作練習，探索語意化標籤、CSS 樣式排版及流動式版面的基礎作品集。
+                    </p>
+                </div>
+                <div>
+                    <div class="repo-meta">
+                        <div class="meta-item">
+                            <span class="lang-dot" style="background-color: #e34c26;"></span>
+                            <span>HTML</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="far fa-star"></i>
+                            <span id="stars-html">0</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-code-branch"></i>
+                            <span id="forks-html">0</span>
+                        </div>
+                    </div>
+                    <a href="https://github.com/EMAILYS/html" target="_blank" class="btn-view btn-primary">
+                        <i class="fab fa-github"></i> 瀏覽儲存庫
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <p>Made with <i class="fas fa-heart"></i> by Antigravity AI for EMAILYS | © 2026</p>
+        </footer>
+    </div>
+
+    <!-- Dynamic integration script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const username = 'EMAILYS';
+            const statusDot = document.getElementById('status-dot');
+            const statusText = document.getElementById('status-text');
+
+            // 預設靜態資料，若 API 呼叫失敗將以此資料兜底
+            const fallbackData = {
+                AgenticCoding: { stars: 0, forks: 0, desc: "透過 AI Agent 自動化建構的個人作品集網頁，整合自動部署至 GitHub Pages 的工作流程，呈現完美的 Glassmorphism 視覺設計與流動特效。" },
+                tetris: { stars: 0, forks: 0, desc: "經典俄羅斯方塊（Tetris）遊戲的 JavaScript 純前端實現，具備流暢的操作體驗、經典的消行計分規則與精緻的視覺介面。" },
+                html: { stars: 0, forks: 0, desc: "HTML 基礎網頁實作練習，探索語意化標籤、CSS 樣式排版及流動式版面的基礎作品集。" }
+            };
+
+            // 抓取 GitHub API
+            fetch(`https://api.github.com/users/${username}/repos`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`API 請求失敗: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(repos => {
+                    // 抓取 user 資訊更新 Bio 或 Avatar
+                    fetch(`https://api.github.com/users/${username}`)
+                        .then(r => r.ok ? r.json() : null)
+                        .then(user => {
+                            if (user && user.bio) {
+                                document.getElementById('user-bio').textContent = user.bio;
+                            }
+                        })
+                        .catch(() => {});
+
+                    let updateCount = 0;
+                    repos.forEach(repo => {
+                        const name = repo.name;
+                        // 若是我們卡片有列出的儲存庫，動態更新其資訊
+                        if (fallbackData.hasOwnProperty(name)) {
+                            const starEl = document.getElementById(`stars-${name}`);
+                            const forkEl = document.getElementById(`forks-${name}`);
+                            const descEl = document.getElementById(`desc-${name}`);
+
+                            if (starEl) starEl.textContent = repo.stargazers_count;
+                            if (forkEl) forkEl.textContent = repo.forks_count;
+                            if (descEl && repo.description) descEl.textContent = repo.description;
+                            updateCount++;
+                        }
+                    });
+
+                    // 更新狀態指示燈為「即時更新成功」
+                    statusDot.classList.remove('fallback');
+                    statusText.textContent = '已連結 GitHub API 取得即時狀態';
+                })
+                .catch(err => {
+                    console.warn('無法抓取 API，使用預載入的靜態快取資料顯示。', err);
+                    // 失敗時使用預設靜態資料填充
+                    Object.keys(fallbackData).forEach(name => {
+                        const starEl = document.getElementById(`stars-${name}`);
+                        const forkEl = document.getElementById(`forks-${name}`);
+                        const descEl = document.getElementById(`desc-${name}`);
+
+                        if (starEl) starEl.textContent = fallbackData[name].stars;
+                        if (forkEl) forkEl.textContent = fallbackData[name].forks;
+                        if (descEl) descEl.textContent = fallbackData[name].desc;
+                    });
+
+                    // 更新狀態指示燈為「載入快取」
+                    statusDot.classList.add('fallback');
+                    statusText.textContent = '已加載本地快取資料';
+                });
+        });
+    </script>
+</body>
+</html>
