@@ -1,0 +1,1483 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="EMAILYS 的 GitHub 作品集 — 探索 AI 代理開發、遊戲程式與網頁技術的個人儲存庫展示頁。">
+  <title>EMAILYS | GitHub 作品集</title>
+
+  <!-- 字型預載：載入 Inter 與 JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    /* ─── 設計系統語義色彩代幣 (ui-ux-pro-max 規範) ──────────────── */
+    :root {
+      /* 背景與表面 */
+      --surface-bg:        #09090b;
+      --surface-01:        rgba(17, 17, 19, 0.65);
+      --surface-02:        rgba(24, 24, 27, 0.8);
+      --surface-03:        rgba(39, 39, 42, 0.9);
+
+      /* 邊框 */
+      --border-subtle:     rgba(255, 255, 255, 0.06);
+      --border-default:    rgba(255, 255, 255, 0.10);
+      --border-strong:     rgba(255, 255, 255, 0.18);
+
+      /* 文字 */
+      --text-primary:      #fafafa;
+      --text-secondary:    #a1a1aa;
+      --text-tertiary:     #71717a;
+
+      /* 品牌色 */
+      --brand-cyan:        #06b6d4;
+      --brand-violet:      #8b5cf6;
+      --brand-rose:        #f43f5e;
+      --brand-amber:       #f59e0b;
+      --brand-emerald:     #10b981;
+
+      /* 語義提示 */
+      --color-success:     #10b981;
+      --color-warning:     #f59e0b;
+      --color-error:       #ef4444;
+
+      /* 圓角 */
+      --radius-sm:  8px;
+      --radius-md:  14px;
+      --radius-lg:  20px;
+      --radius-xl:  28px;
+
+      /* 8dp 增量間距系統 */
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-5: 20px;
+      --space-6: 24px;
+      --space-8: 32px;
+      --space-10: 40px;
+      --space-12: 48px;
+      --space-16: 64px;
+
+      /* 動畫時長與曲線 */
+      --dur-fast:   150ms;
+      --dur-base:   250ms;
+      --dur-slow:   350ms;
+      --ease-out:   cubic-bezier(0.16, 1, 0.3, 1); /* 物理彈簧曲線 */
+      --ease-in:    cubic-bezier(0.4, 0, 1, 1);
+
+      /* Z-index 層級 */
+      --z-base:    0;
+      --z-float:   10;
+      --z-overlay: 100;
+      --z-modal:   1000;
+    }
+
+    /* ─── CSS Reset ────────────────────────────────────────── */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      font-size: 16px;
+      scroll-behavior: smooth;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    /* 支援系統減少動態效果設定 */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+      .bg-orb {
+        display: none !important;
+      }
+    }
+
+    body {
+      background-color: var(--surface-bg);
+      color: var(--text-primary);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      line-height: 1.6;
+      min-height: 100dvh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* ─── 鍵盤無障礙快速通道 ───────────────────────────────── */
+    .skip-link {
+      position: absolute;
+      top: -100%;
+      left: var(--space-4);
+      background: var(--brand-cyan);
+      color: #000;
+      padding: var(--space-2) var(--space-4);
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      font-size: 0.875rem;
+      z-index: var(--z-modal);
+      text-decoration: none;
+      transition: top var(--dur-fast) var(--ease-out);
+    }
+    .skip-link:focus {
+      top: var(--space-4);
+    }
+
+    /* ─── 環境光暈背景 ───────────────────────────────────── */
+    .bg-layer {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .bg-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(140px);
+      opacity: 0.45;
+    }
+    .bg-orb-1 {
+      width: 600px; height: 600px;
+      top: -200px; left: -150px;
+      background: radial-gradient(circle, rgba(139, 92, 246, 0.22) 0%, transparent 70%);
+      animation: float-orb-1 20s infinite alternate ease-in-out;
+    }
+    .bg-orb-2 {
+      width: 500px; height: 500px;
+      bottom: -150px; right: -100px;
+      background: radial-gradient(circle, rgba(6, 182, 212, 0.18) 0%, transparent 70%);
+      animation: float-orb-2 25s infinite alternate ease-in-out;
+    }
+    @keyframes float-orb-1 {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(50px, 80px) scale(1.1); }
+    }
+    @keyframes float-orb-2 {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(-60px, -40px) scale(1.05); }
+    }
+
+    /* ─── 版面容器 ──────────────────────────────────────── */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: var(--space-10) var(--space-6);
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: var(--space-8) var(--space-4);
+      }
+    }
+
+    /* ─── Header ────────────────────────────────────────── */
+    .header {
+      margin-bottom: var(--space-10);
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      gap: var(--space-6);
+      flex-wrap: wrap;
+    }
+
+    /* 頭像與外環 */
+    .avatar-wrap {
+      position: relative;
+      flex-shrink: 0;
+      width: 96px;
+      height: 96px;
+    }
+    .avatar-ring {
+      position: absolute;
+      inset: -3px;
+      border-radius: 50%;
+      background: conic-gradient(
+        from 0deg,
+        var(--brand-violet),
+        var(--brand-cyan),
+        var(--brand-violet)
+      );
+      animation: spin-ring 8s linear infinite;
+      z-index: 0;
+    }
+    @keyframes spin-ring {
+      to { transform: rotate(360deg); }
+    }
+    .avatar {
+      position: relative;
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      border: 3px solid var(--surface-bg);
+      object-fit: cover;
+      display: block;
+      z-index: 1;
+    }
+
+    /* 頭像骨架 */
+    .avatar-skeleton {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: linear-gradient(90deg, rgba(39, 39, 42, 0.4) 25%, rgba(63, 63, 70, 0.6) 50%, rgba(39, 39, 42, 0.4) 75%);
+      background-size: 200% 100%;
+      animation: shimmer-swipe 1.5s infinite linear;
+      z-index: 2;
+      border: 3px solid var(--surface-bg);
+    }
+
+    .header-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .header-name {
+      font-size: clamp(1.75rem, 4vw, 2.5rem);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1.2;
+      background: linear-gradient(135deg, #fafafa 0%, #a1a1aa 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: var(--space-1);
+    }
+
+    .header-handle {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      color: var(--brand-cyan);
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-decoration: none;
+      padding: var(--space-1) var(--space-2);
+      border-radius: var(--radius-sm);
+      margin-bottom: var(--space-3);
+      transition: background var(--dur-fast) var(--ease-out);
+      cursor: pointer;
+      touch-action: manipulation;
+      min-height: 44px; /* Touch target 符合 44px */
+    }
+    .header-handle:hover {
+      background: rgba(6, 182, 212, 0.08);
+    }
+    .header-handle:focus-visible {
+      outline: 2px solid var(--brand-cyan);
+      outline-offset: 2px;
+    }
+
+    .header-bio {
+      color: var(--text-secondary);
+      font-size: 0.975rem;
+      line-height: 1.65;
+      max-width: 520px;
+    }
+
+    /* API 狀態徽章 */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: 5px 12px;
+      border-radius: 9999px;
+      background: var(--surface-01);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border-subtle);
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-top: var(--space-4);
+      user-select: none;
+    }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--color-success);
+      box-shadow: 0 0 0 2.5px rgba(16, 185, 129, 0.25);
+      flex-shrink: 0;
+    }
+    .status-dot.loading {
+      background: var(--color-warning);
+      box-shadow: 0 0 0 2.5px rgba(245, 158, 11, 0.25);
+      animation: pulse-dot 1.2s ease-in-out infinite;
+    }
+    .status-dot.offline {
+      background: var(--color-error);
+      box-shadow: 0 0 0 2.5px rgba(239, 68, 68, 0.25);
+    }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* ─── Stats Bar ─────────────────────────────────────── */
+    .stats-bar {
+      display: flex;
+      gap: var(--space-6);
+      flex-wrap: wrap;
+      margin-bottom: var(--space-10);
+      padding: var(--space-5) var(--space-6);
+      background: var(--surface-01);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+    }
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.03em;
+      font-family: 'JetBrains Mono', monospace;
+      min-width: 24px;
+    }
+    .stat-label {
+      font-size: 0.78rem;
+      color: var(--text-tertiary);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .stat-divider {
+      width: 1px;
+      background: var(--border-subtle);
+      align-self: stretch;
+    }
+
+    /* ─── Section 標題 ──────────────────────────────────── */
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      margin-bottom: var(--space-6);
+    }
+    .section-title {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-tertiary);
+    }
+    .section-line {
+      flex: 1;
+      height: 1px;
+      background: var(--border-subtle);
+    }
+
+    /* ─── Bento Grid ────────────────────────────────────── */
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      grid-template-rows: auto;
+      gap: var(--space-4);
+      margin-bottom: var(--space-10);
+    }
+
+    /* 卡片基礎樣式 (Glassmorphism + Smooth Transitions) */
+    .bento-card {
+      background: var(--surface-01);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+      position: relative;
+      overflow: hidden;
+      transition:
+        border-color var(--dur-base) var(--ease-out),
+        transform var(--dur-base) var(--ease-out),
+        box-shadow var(--dur-base) var(--ease-out);
+      display: flex;
+      flex-direction: column;
+      min-height: 180px;
+    }
+
+    .bento-card:hover {
+      border-color: var(--border-strong);
+      transform: translateY(-4px);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4), 0 0 20px var(--hover-shadow-glow, rgba(255, 255, 255, 0.02));
+    }
+
+    /* 卡片頂部漸層條裝飾 */
+    .bento-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1.5px;
+      background: var(--card-accent, transparent);
+      transition: opacity var(--dur-base) var(--ease-out);
+      opacity: 0.5;
+      z-index: 1;
+    }
+    .bento-card:hover::before {
+      opacity: 1;
+    }
+
+    /* Bento 網格欄位分配 */
+    .bento-main   { grid-column: span 8; }
+    .bento-side   { grid-column: span 4; }
+    .bento-third  { grid-column: span 4; }
+    .bento-full   { grid-column: span 12; }
+    .bento-half   { grid-column: span 6; }
+
+    @media (max-width: 900px) {
+      .bento-main, .bento-side, .bento-half { grid-column: span 12; }
+      .bento-third { grid-column: span 12; }
+    }
+    @media (min-width: 601px) and (max-width: 900px) {
+      .bento-third { grid-column: span 6; }
+    }
+
+    /* ─── 精選儲存庫自訂色彩特點 ───────────────────────── */
+    /* AgenticCoding — 青色 */
+    .card-agentic {
+      --card-accent: linear-gradient(90deg, var(--brand-cyan), transparent);
+      --hover-shadow-glow: rgba(6, 182, 212, 0.08);
+    }
+    .card-agentic:hover {
+      border-color: rgba(6, 182, 212, 0.3);
+    }
+
+    /* tetris — 紫色 */
+    .card-tetris {
+      --card-accent: linear-gradient(90deg, var(--brand-violet), transparent);
+      --hover-shadow-glow: rgba(139, 92, 246, 0.08);
+    }
+    .card-tetris:hover {
+      border-color: rgba(139, 92, 246, 0.3);
+    }
+
+    /* html — 玫紅 */
+    .card-html {
+      --card-accent: linear-gradient(90deg, var(--brand-rose), transparent);
+      --hover-shadow-glow: rgba(244, 63, 94, 0.08);
+    }
+    .card-html:hover {
+      border-color: rgba(244, 63, 94, 0.3);
+    }
+
+    /* 通用卡片 */
+    .card-generic {
+      --card-accent: linear-gradient(90deg, var(--text-tertiary), transparent);
+      --hover-shadow-glow: rgba(255, 255, 255, 0.02);
+    }
+
+    /* ─── 卡片內部元件 ─────────────────────────────────── */
+    .card-icon-wrap {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: var(--space-4);
+      flex-shrink: 0;
+    }
+    .card-icon-wrap svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .card-tag-row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      margin-bottom: var(--space-3);
+      flex-wrap: wrap;
+    }
+    .card-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-subtle);
+      letter-spacing: 0.03em;
+    }
+    .lang-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .card-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.025em;
+      margin-bottom: var(--space-2);
+      line-height: 1.3;
+    }
+    .card-title-lg {
+      font-size: 1.5rem;
+    }
+
+    .card-desc {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.65;
+      flex: 1;
+      margin-bottom: var(--space-5);
+    }
+
+    .card-meta {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      font-size: 0.8rem;
+      color: var(--text-tertiary);
+      padding-top: var(--space-4);
+      border-top: 1px solid var(--border-subtle);
+      margin-bottom: var(--space-5);
+    }
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+    }
+    .meta-item svg {
+      width: 14px;
+      height: 14px;
+      opacity: 0.7;
+    }
+    .meta-count {
+      font-variant-numeric: tabular-nums;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ─── CTA 按鈕 ──────────────────────────────────────── */
+    .btn-repo {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+      padding: 10px var(--space-5);
+      border-radius: var(--radius-md);
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      border: 1px solid var(--border-default);
+      background: rgba(255, 255, 255, 0.02);
+      color: var(--text-primary);
+      transition:
+        background var(--dur-fast) var(--ease-out),
+        border-color var(--dur-fast) var(--ease-out),
+        transform var(--dur-fast) var(--ease-out);
+      touch-action: manipulation;
+      min-height: 44px; /* Touch target 尺寸 >= 44px */
+      align-self: flex-start;
+    }
+    .btn-repo svg {
+      width: 16px;
+      height: 16px;
+    }
+    .btn-repo:hover {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: var(--border-strong);
+      transform: translateY(-1px);
+    }
+    .btn-repo:active {
+      transform: scale(0.97); /* 按壓微動回饋 */
+    }
+    .btn-repo:focus-visible {
+      outline: 2px solid var(--brand-cyan);
+      outline-offset: 2px;
+    }
+
+    /* 精選卡片主要 CTA（青色半透明填充） */
+    .btn-repo-primary {
+      background: rgba(6, 182, 212, 0.08);
+      border-color: rgba(6, 182, 212, 0.25);
+      color: var(--brand-cyan);
+    }
+    .btn-repo-primary:hover {
+      background: rgba(6, 182, 212, 0.16);
+      border-color: rgba(6, 182, 212, 0.4);
+    }
+
+    /* ─── 大張精選卡片內部結構 ─────────────────────────── */
+    .hero-card-body {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: 4px 10px;
+      border-radius: 9999px;
+      background: rgba(6, 182, 212, 0.08);
+      border: 1px solid rgba(6, 182, 212, 0.2);
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--brand-cyan);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: var(--space-4);
+      align-self: flex-start;
+    }
+    .hero-badge svg {
+      width: 12px;
+      height: 12px;
+    }
+
+    /* 特色高亮塊 */
+    .highlight-block {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
+      margin-bottom: var(--space-4);
+    }
+    .highlight-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-tertiary);
+      margin-bottom: var(--space-2);
+    }
+    .highlight-value {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ─── Shimmer Skeleton 載入效果 (ui-ux-pro-max 規範) ──────── */
+    @keyframes shimmer-swipe {
+      0%   { background-position: -200% 0; }
+      100% { background-position:  200% 0; }
+    }
+    .skeleton {
+      background: linear-gradient(90deg, rgba(39, 39, 42, 0.4) 25%, rgba(63, 63, 70, 0.6) 50%, rgba(39, 39, 42, 0.4) 75%);
+      background-size: 200% 100%;
+      animation: shimmer-swipe 1.5s infinite linear;
+      border-radius: var(--radius-sm);
+      display: inline-block;
+      color: transparent !important;
+      pointer-events: none;
+      user-select: none;
+      border: none !important;
+    }
+
+    /* ─── 頁腳 ──────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border-subtle);
+      padding-top: var(--space-8);
+      padding-bottom: var(--space-8);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: var(--space-4);
+    }
+    .footer-copy {
+      font-size: 0.82rem;
+      color: var(--text-tertiary);
+    }
+    .footer-links {
+      display: flex;
+      gap: var(--space-5);
+    }
+    .footer-link {
+      font-size: 0.82rem;
+      color: var(--text-tertiary);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-1);
+      transition: color var(--dur-fast) var(--ease-out);
+      min-height: 44px; /* Touch target 尺寸 >= 44px */
+    }
+    .footer-link:hover {
+      color: var(--text-secondary);
+    }
+    .footer-link:focus-visible {
+      outline: 2px solid var(--brand-cyan);
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+    .footer-link svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    /* ─── 進場過渡 ──────────────────────────────────────── */
+    @keyframes fade-up {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .fade-up {
+      animation: fade-up var(--dur-slow) var(--ease-out) both;
+    }
+    .fade-up-delay-1 { animation-delay: 60ms;  }
+    .fade-up-delay-2 { animation-delay: 120ms; }
+    .fade-up-delay-3 { animation-delay: 180ms; }
+    .fade-up-delay-4 { animation-delay: 240ms; }
+  </style>
+</head>
+
+<body>
+  <!-- 鍵盤導覽略過連結 -->
+  <a href="#main-content" class="skip-link">跳至主要內容</a>
+
+  <!-- 背景動態環境光源 -->
+  <div class="bg-layer" aria-hidden="true">
+    <div class="bg-orb bg-orb-1"></div>
+    <div class="bg-orb bg-orb-2"></div>
+  </div>
+
+  <div class="container">
+    <!-- ── Header ── -->
+    <header class="header fade-up" role="banner">
+      <div class="header-inner">
+        <!-- 頭像區 -->
+        <div class="avatar-wrap">
+          <div class="avatar-ring"></div>
+          <div id="avatar-skeleton" class="avatar-skeleton"></div>
+          <img
+            id="user-avatar"
+            alt="EMAILYS 的 GitHub 頭像"
+            class="avatar"
+            width="96"
+            height="96"
+            style="display: none; opacity: 0;"
+          >
+        </div>
+
+        <!-- 用戶資訊 -->
+        <div class="header-info">
+          <h1 class="header-name skeleton" id="user-name" style="width: 160px; height: 32px; margin-bottom: 8px;">&nbsp;</h1>
+          <div>
+            <a
+              href="https://github.com/EMAILYS"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="header-handle"
+              aria-label="前往 EMAILYS 的 GitHub 個人頁面"
+              id="github-profile-link"
+            >
+              <!-- GitHub 圖示 (Lucide 風格 Vector SVG) -->
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">
+                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12Z"/>
+              </svg>
+              @EMAILYS
+            </a>
+          </div>
+          <p class="header-bio skeleton" id="user-bio" style="width: 100%; max-width: 450px; height: 20px;">&nbsp;</p>
+          
+          <!-- 連線狀態徽章 -->
+          <div class="status-badge" role="status" aria-live="polite" aria-label="API 連線狀態">
+            <div class="status-dot loading" id="status-dot" aria-hidden="true"></div>
+            <span id="status-text">正在連接 GitHub API…</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ── Stats Bar ── -->
+    <div class="stats-bar fade-up fade-up-delay-1" role="region" aria-label="個人統計數據">
+      <div class="stat-item">
+        <span class="stat-value skeleton" id="stat-repos" aria-label="公開儲存庫數量">&nbsp;</span>
+        <span class="stat-label">儲存庫</span>
+      </div>
+      <div class="stat-divider" aria-hidden="true"></div>
+      <div class="stat-item">
+        <span class="stat-value skeleton" id="stat-stars" aria-label="總星標數">&nbsp;</span>
+        <span class="stat-label">星標</span>
+      </div>
+      <div class="stat-divider" aria-hidden="true"></div>
+      <div class="stat-item">
+        <span class="stat-value skeleton" id="stat-langs" aria-label="使用語言數">&nbsp;</span>
+        <span class="stat-label">語言</span>
+      </div>
+      <div class="stat-divider" aria-hidden="true"></div>
+      <div class="stat-item">
+        <span class="stat-value" style="font-family:'JetBrains Mono',monospace;">2026</span>
+        <span class="stat-label">活躍年份</span>
+      </div>
+    </div>
+
+    <!-- ── 主要展示區 ── -->
+    <main id="main-content">
+      <div class="section-header fade-up fade-up-delay-2">
+        <span class="section-title">精選作品</span>
+        <div class="section-line" aria-hidden="true"></div>
+      </div>
+
+      <!-- Bento Grid 佈局 -->
+      <div class="bento-grid" role="list">
+
+        <!-- 卡片 1：AgenticCoding (佔 8/12) -->
+        <article
+          class="bento-card bento-main card-agentic fade-up fade-up-delay-2"
+          role="listitem"
+          aria-labelledby="title-agentic"
+        >
+          <div class="hero-card-body">
+            <div class="hero-badge" aria-label="精選作品">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+              </svg>
+              精選
+            </div>
+
+            <div class="card-icon-wrap" aria-hidden="true">
+              <!-- Bot Vector SVG -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="10" rx="2"/>
+                <circle cx="12" cy="5" r="2"/>
+                <path d="M12 7v4"/>
+                <line x1="8" y1="16" x2="8" y2="16"/>
+                <line x1="16" y1="16" x2="16" y2="16"/>
+                <circle cx="8" cy="16" r="1" fill="#06b6d4"/>
+                <circle cx="16" cy="16" r="1" fill="#06b6d4"/>
+              </svg>
+            </div>
+
+            <div class="card-tag-row">
+              <span class="card-tag">
+                <span class="lang-dot" style="background:#f1e05a;" aria-hidden="true"></span>
+                JavaScript
+              </span>
+              <span class="card-tag">
+                <span class="lang-dot" style="background:#e34c26;" aria-hidden="true"></span>
+                HTML
+              </span>
+              <span class="card-tag">AI Agent</span>
+            </div>
+
+            <h2 class="card-title card-title-lg" id="title-agentic">AgenticCoding</h2>
+            <p class="card-desc skeleton" id="desc-AgenticCoding" style="height: 48px; width: 100%;">&nbsp;</p>
+
+            <div class="highlight-block" aria-label="技術亮點">
+              <div class="highlight-label">技術亮點</div>
+              <div class="highlight-value">GitHub API · Pages 自動部署 · Glassmorphism</div>
+            </div>
+
+            <div class="card-meta" aria-label="儲存庫數據">
+              <div class="meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                </svg>
+                <span class="meta-count skeleton" id="stars-AgenticCoding" aria-label="星標數" style="width: 24px;">&nbsp;</span>
+              </div>
+              <div class="meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="18" cy="18" r="3"/>
+                  <circle cx="6" cy="6" r="3"/>
+                  <path d="M6 21V9a9 9 0 0 0 9 9"/>
+                </svg>
+                <span class="meta-count skeleton" id="forks-AgenticCoding" aria-label="Fork 數" style="width: 24px;">&nbsp;</span>
+              </div>
+            </div>
+
+            <a
+              href="https://github.com/EMAILYS/AgenticCoding"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn-repo btn-repo-primary"
+              id="btn-agentic"
+              aria-label="在 GitHub 上瀏覽 AgenticCoding 儲存庫"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+              </svg>
+              瀏覽儲存庫
+            </a>
+          </div>
+        </article>
+
+        <!-- 卡片 2：tetris (佔 4/12) -->
+        <article
+          class="bento-card bento-side card-tetris fade-up fade-up-delay-3"
+          role="listitem"
+          aria-labelledby="title-tetris"
+        >
+          <div class="card-icon-wrap" aria-hidden="true">
+            <!-- Gamepad Vector SVG -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="6" y1="12" x2="10" y2="12"/>
+              <line x1="8" y1="10" x2="8" y2="14"/>
+              <line x1="15" y1="13" x2="15.01" y2="13"/>
+              <line x1="18" y1="11" x2="18.01" y2="11"/>
+              <rect x="2" y="6" width="20" height="12" rx="2"/>
+            </svg>
+          </div>
+
+          <div class="card-tag-row">
+            <span class="card-tag">
+              <span class="lang-dot" style="background:#f1e05a;" aria-hidden="true"></span>
+              JavaScript
+            </span>
+            <span class="card-tag">遊戲</span>
+          </div>
+
+          <h2 class="card-title" id="title-tetris">tetris</h2>
+          <p class="card-desc skeleton" id="desc-tetris" style="height: 48px; width: 100%;">&nbsp;</p>
+
+          <div class="card-meta" aria-label="儲存庫數據">
+            <div class="meta-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+              </svg>
+              <span class="meta-count skeleton" id="stars-tetris" aria-label="星標數" style="width: 24px;">&nbsp;</span>
+            </div>
+            <div class="meta-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="18" cy="18" r="3"/>
+                <circle cx="6" cy="6" r="3"/>
+                <path d="M6 21V9a9 9 0 0 0 9 9"/>
+              </svg>
+              <span class="meta-count skeleton" id="forks-tetris" aria-label="Fork 數" style="width: 24px;">&nbsp;</span>
+            </div>
+          </div>
+
+          <a
+            href="https://github.com/EMAILYS/tetris"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn-repo"
+            id="btn-tetris"
+            aria-label="在 GitHub 上瀏覽 tetris 儲存庫"
+            style="margin-top:auto;"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+            </svg>
+            瀏覽儲存庫
+          </a>
+        </article>
+
+        <!-- 卡片 3：html (佔 4/12) -->
+        <article
+          class="bento-card bento-third card-html fade-up fade-up-delay-4"
+          role="listitem"
+          aria-labelledby="title-html"
+        >
+          <div class="card-icon-wrap" aria-hidden="true">
+            <!-- Code Vector SVG -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="#f43f5e" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="16 18 22 12 16 6"/>
+              <polyline points="8 6 2 12 8 18"/>
+            </svg>
+          </div>
+
+          <div class="card-tag-row">
+            <span class="card-tag">
+              <span class="lang-dot" style="background:#e34c26;" aria-hidden="true"></span>
+              HTML
+            </span>
+          </div>
+
+          <h2 class="card-title" id="title-html">html</h2>
+          <p class="card-desc skeleton" id="desc-html" style="height: 48px; width: 100%;">&nbsp;</p>
+
+          <div class="card-meta" aria-label="儲存庫數據">
+            <div class="meta-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+              </svg>
+              <span class="meta-count skeleton" id="stars-html" aria-label="星標數" style="width: 24px;">&nbsp;</span>
+            </div>
+            <div class="meta-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="18" cy="18" r="3"/>
+                <circle cx="6" cy="6" r="3"/>
+                <path d="M6 21V9a9 9 0 0 0 9 9"/>
+              </svg>
+              <span class="meta-count skeleton" id="forks-html" aria-label="Fork 數" style="width: 24px;">&nbsp;</span>
+            </div>
+          </div>
+
+          <a
+            href="https://github.com/EMAILYS/html"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn-repo"
+            id="btn-html"
+            aria-label="在 GitHub 上瀏覽 html 儲存庫"
+            style="margin-top:auto;"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+            </svg>
+            瀏覽儲存庫
+          </a>
+        </article>
+
+        <!-- 語言分佈統計卡 (佔 4/12) -->
+        <div
+          class="bento-card bento-third fade-up fade-up-delay-4"
+          role="region"
+          aria-label="語言使用統計"
+        >
+          <div class="section-header" style="margin-bottom:var(--space-5);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true">
+              <line x1="18" y1="20" x2="18" y2="10"/>
+              <line x1="12" y1="20" x2="12" y2="4"/>
+              <line x1="6" y1="20" x2="6" y2="14"/>
+            </svg>
+            <span class="section-title">語言分布</span>
+          </div>
+
+          <div id="langs-distribution-container" role="list" aria-label="主要程式語言比例">
+            <!-- 預載 Skeleton -->
+            <div style="margin-bottom:12px; height:32px;" class="skeleton"></div>
+            <div style="margin-bottom:12px; height:32px;" class="skeleton"></div>
+            <div style="height:32px;" class="skeleton"></div>
+          </div>
+        </div>
+
+        <!-- 技術棧卡 (佔 4/12) -->
+        <div
+          class="bento-card bento-third fade-up fade-up-delay-4"
+          role="region"
+          aria-label="主要技術棧"
+        >
+          <div class="section-header" style="margin-bottom:var(--space-5);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true">
+              <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+              <polyline points="2 17 12 22 22 17"/>
+              <polyline points="2 12 12 17 22 12"/>
+            </svg>
+            <span class="section-title">技術棧</span>
+          </div>
+
+          <div id="tech-tags-container" style="display:flex;flex-wrap:wrap;gap:var(--space-2);" role="list" aria-label="使用的技術">
+            <span class="card-tag" role="listitem">HTML5</span>
+            <span class="card-tag" role="listitem">CSS3</span>
+            <span class="card-tag" role="listitem">JavaScript</span>
+            <span class="card-tag" role="listitem">GitHub API</span>
+            <span class="card-tag" role="listitem">GitHub Pages</span>
+            <span class="card-tag" role="listitem">AI Agent</span>
+          </div>
+        </div>
+
+      </div><!-- /bento-grid -->
+
+      <!-- ── 其他儲存庫動態加載區 ── -->
+      <div id="other-repos-section" style="display: none;">
+        <div class="section-header fade-up">
+          <span class="section-title">其他公開作品</span>
+          <div class="section-line" aria-hidden="true"></div>
+        </div>
+        <div class="bento-grid" id="other-repos-grid" role="list">
+          <!-- JS 將在此動態生成 Glassmorphism 卡片 -->
+        </div>
+      </div>
+    </main>
+
+    <!-- ── 頁腳 ── -->
+    <footer role="contentinfo" class="fade-up">
+      <p class="footer-copy">
+        &copy; 2026 EMAILYS &mdash; Built with Antigravity AI
+      </p>
+      <nav class="footer-links" aria-label="頁腳導覽">
+        <a
+          href="https://github.com/EMAILYS"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="footer-link"
+          aria-label="前往 GitHub 個人頁面"
+        >
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12Z"/>
+          </svg>
+          GitHub
+        </a>
+        <a
+          href="https://EMAILYS.github.io/AgenticCoding/index1.html"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="footer-link"
+          aria-label="前往此 GitHub Pages 網頁"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="2" y1="12" x2="22" y2="12"/>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+          </svg>
+          Pages
+        </a>
+      </nav>
+    </footer>
+  </div>
+
+  <!-- ── 動態 GitHub API 與 UI 渲染 JavaScript ── -->
+  <script>
+    (function () {
+      'use strict';
+
+      const USERNAME = 'EMAILYS';
+      const KNOWN_REPOS = ['AgenticCoding', 'tetris', 'html'];
+
+      // 靜態備份資料（當 GitHub API 達到 Rate Limit 或離線時使用）
+      const FALLBACK = {
+        user: {
+          name: 'EMAILYS',
+          bio: '探索 AI 代理開發、遊戲程式設計與網頁技術的開發者。以下是我的 GitHub 作品集。',
+          avatar_url: 'https://avatars.githubusercontent.com/u/144986474?v=4',
+          public_repos: 3,
+          stars: 0,
+          languages_count: 3
+        },
+        AgenticCoding: {
+          stars: 0, forks: 0,
+          desc: '透過 AI Agent 自動化建構的個人作品集網頁，整合 GitHub REST API 自動部署至 GitHub Pages 的完整工作流程，呈現精緻的深色介面與流暢動態效果。'
+        },
+        tetris: {
+          stars: 0, forks: 0,
+          desc: '純前端 JavaScript 實現的經典俄羅斯方塊，具備完整消行計分邏輯與精緻視覺介面。'
+        },
+        html: {
+          stars: 0, forks: 0,
+          desc: 'HTML 基礎實作練習集，探索語意化標籤、CSS 排版與響應式設計的學習作品。'
+        }
+      };
+
+      // 快速取得 DOM 元素
+      function q(id) { return document.getElementById(id); }
+
+      // 設定連線狀態列
+      function setStatus(mode, text) {
+        const dot = q('status-dot');
+        const txt = q('status-text');
+        if (!dot || !txt) return;
+        dot.className = 'status-dot';
+        if (mode === 'loading') dot.classList.add('loading');
+        if (mode === 'offline') dot.classList.add('offline');
+        txt.textContent = text;
+      }
+
+      // 安全地更新元素內容並移除 Shimmer Skeleton 骨架屏
+      function updateElement(id, text, isHtml) {
+        var el = q(id);
+        if (!el) return;
+        el.classList.remove('skeleton');
+        el.style.width = '';
+        el.style.height = '';
+        if (isHtml) {
+          el.innerHTML = text;
+        } else {
+          el.textContent = text;
+        }
+      }
+
+      // 常見語言顏色配對表
+      function getLanguageColor(lang) {
+        var colors = {
+          'JavaScript': '#f1e05a',
+          'HTML': '#e34c26',
+          'CSS': '#563d7c',
+          'Python': '#3572A5',
+          'TypeScript': '#3178c6',
+          'Vue': '#41b883',
+          'Shell': '#89e051',
+          'PowerShell': '#012456',
+          'C#': '#178600',
+          'C++': '#f34b7d',
+          'Java': '#b07219'
+        };
+        return colors[lang] || '#8e8e93';
+      }
+
+      // 渲染語言比例分布條
+      function renderLangsDistribution(repos) {
+        var container = q('langs-distribution-container');
+        if (!container) return;
+
+        var langCounts = {};
+        var total = 0;
+
+        repos.forEach(function(r) {
+          if (r.language) {
+            langCounts[r.language] = (langCounts[r.language] || 0) + 1;
+            total++;
+          }
+        });
+
+        if (total === 0) {
+          container.innerHTML = '<p style="font-size:0.85rem;color:var(--text-tertiary);">無語言統計資料</p>';
+          return;
+        }
+
+        // 排序語言
+        var sortedLangs = [];
+        for (var l in langCounts) {
+          sortedLangs.push({ name: l, count: langCounts[l] });
+        }
+        sortedLangs.sort(function(a, b) { return b.count - a.count; });
+
+        var html = '';
+        sortedLangs.forEach(function(item) {
+          var pct = Math.round((item.count / total) * 100);
+          var color = getLanguageColor(item.name);
+          html += `
+            <div role="listitem" style="margin-bottom:var(--space-4);">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                <div style="display:flex;align-items:center;gap:var(--space-2);">
+                  <span style="width:9px;height:9px;border-radius:50%;background:${color};display:inline-block;" aria-hidden="true"></span>
+                  <span style="font-size:0.83rem;color:var(--text-secondary);font-weight:500;">${item.name}</span>
+                </div>
+                <span style="font-size:0.78rem;color:var(--text-tertiary);font-family:'JetBrains Mono',monospace;">${pct}%</span>
+              </div>
+              <div style="height:4px;background:rgba(255,255,255,0.03);border-radius:9999px;overflow:hidden;" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100" aria-label="${item.name} ${pct}%">
+                <div style="height:100%;width:${pct}%;background:${color};border-radius:9999px;"></div>
+              </div>
+            </div>
+          `;
+        });
+
+        container.innerHTML = html;
+      }
+
+      // 動態建立其他通用儲存庫卡片 (符合 ui-ux-pro-max 規範)
+      function createGenericCard(repo) {
+        var lang = repo.language || 'Markdown';
+        var langColor = getLanguageColor(lang);
+        var desc = repo.description || '該專案尚未填寫詳細描述。';
+        
+        return `
+          <article class="bento-card bento-third card-generic fade-up" role="listitem" aria-labelledby="title-${repo.name}">
+            <div class="card-tag-row">
+              <span class="card-tag">
+                <span class="lang-dot" style="background:${langColor};" aria-hidden="true"></span>
+                ${lang}
+              </span>
+            </div>
+            <h2 class="card-title" id="title-${repo.name}">${repo.name}</h2>
+            <p class="card-desc">${desc}</p>
+            <div class="card-meta" aria-label="儲存庫數據">
+              <div class="meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                </svg>
+                <span class="meta-count" aria-label="星標數">${repo.stargazers_count}</span>
+              </div>
+              <div class="meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="18" cy="18" r="3"/>
+                  <circle cx="6" cy="6" r="3"/>
+                  <path d="M6 21V9a9 9 0 0 0 9 9"/>
+                </svg>
+                <span class="meta-count" aria-label="Fork 數">${repo.forks_count}</span>
+              </div>
+            </div>
+            <a href="${repo.html_url}" target="_blank" rel="noopener noreferrer" class="btn-repo" aria-label="在 GitHub 上瀏覽 ${repo.name} 儲存庫" style="margin-top:auto;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+              </svg>
+              瀏覽儲存庫
+            </a>
+          </article>
+        `;
+      }
+
+      // 頭像漸進載入處理
+      function loadAvatar(url) {
+        var avatarEl = q('user-avatar');
+        var skeletonEl = q('avatar-skeleton');
+        if (!avatarEl) return;
+        avatarEl.src = url;
+        avatarEl.onload = function() {
+          if (skeletonEl) skeletonEl.style.opacity = '0';
+          avatarEl.style.display = 'block';
+          setTimeout(function() {
+            avatarEl.style.opacity = '1';
+            if (skeletonEl) skeletonEl.style.display = 'none';
+          }, 50);
+        };
+        // 萬一圖片載入失敗，隱藏骨架顯示備用頭像
+        avatarEl.onerror = function() {
+          if (skeletonEl) skeletonEl.style.display = 'none';
+          avatarEl.style.display = 'block';
+          avatarEl.style.opacity = '1';
+        };
+      }
+
+      // 優雅降級使用本地備用資料
+      function useFallback() {
+        // 使用者資訊
+        updateElement('user-name', FALLBACK.user.name);
+        updateElement('user-bio', FALLBACK.user.bio);
+        loadAvatar(FALLBACK.user.avatar_url);
+
+        // 統計列
+        updateElement('stat-repos', FALLBACK.user.public_repos);
+        updateElement('stat-stars', FALLBACK.user.stars);
+        updateElement('stat-langs', FALLBACK.user.languages_count);
+
+        // 精選卡片
+        KNOWN_REPOS.forEach(function(name) {
+          updateElement('stars-' + name, FALLBACK[name].stars);
+          updateElement('forks-' + name, FALLBACK[name].forks);
+          updateElement('desc-' + name, FALLBACK[name].desc);
+        });
+
+        // 靜態語言分布
+        var langContainer = q('langs-distribution-container');
+        if (langContainer) {
+          langContainer.innerHTML = `
+            <div role="listitem" style="margin-bottom:var(--space-4);">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                <div style="display:flex;align-items:center;gap:var(--space-2);">
+                  <span style="width:9px;height:9px;border-radius:50%;background:#f1e05a;display:inline-block;" aria-hidden="true"></span>
+                  <span style="font-size:0.83rem;color:var(--text-secondary);font-weight:500;">JavaScript</span>
+                </div>
+                <span style="font-size:0.78rem;color:var(--text-tertiary);font-family:'JetBrains Mono',monospace;">60%</span>
+              </div>
+              <div style="height:4px;background:rgba(255,255,255,0.03);border-radius:9999px;overflow:hidden;">
+                <div style="height:100%;width:60%;background:#f1e05a;border-radius:9999px;"></div>
+              </div>
+            </div>
+            <div role="listitem" style="margin-bottom:var(--space-4);">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                <div style="display:flex;align-items:center;gap:var(--space-2);">
+                  <span style="width:9px;height:9px;border-radius:50%;background:#e34c26;display:inline-block;" aria-hidden="true"></span>
+                  <span style="font-size:0.83rem;color:var(--text-secondary);font-weight:500;">HTML</span>
+                </div>
+                <span style="font-size:0.78rem;color:var(--text-tertiary);font-family:'JetBrains Mono',monospace;">30%</span>
+              </div>
+              <div style="height:4px;background:rgba(255,255,255,0.03);border-radius:9999px;overflow:hidden;">
+                <div style="height:100%;width:30%;background:#e34c26;border-radius:9999px;"></div>
+              </div>
+            </div>
+            <div role="listitem">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                <div style="display:flex;align-items:center;gap:var(--space-2);">
+                  <span style="width:9px;height:9px;border-radius:50%;background:#563d7c;display:inline-block;" aria-hidden="true"></span>
+                  <span style="font-size:0.83rem;color:var(--text-secondary);font-weight:500;">CSS</span>
+                </div>
+                <span style="font-size:0.78rem;color:var(--text-tertiary);font-family:'JetBrains Mono',monospace;">10%</span>
+              </div>
+              <div style="height:4px;background:rgba(255,255,255,0.03);border-radius:9999px;overflow:hidden;">
+                <div style="height:100%;width:10%;background:#563d7c;border-radius:9999px;"></div>
+              </div>
+            </div>
+          `;
+        }
+
+        setStatus('offline', '已載入本地快取備用資料');
+      }
+
+      // 主要邏輯執行
+      setStatus('loading', '正在連接 GitHub API…');
+
+      var reposUrl = 'https://api.github.com/users/' + USERNAME + '/repos?per_page=100&sort=updated';
+      var userUrl  = 'https://api.github.com/users/' + USERNAME;
+
+      Promise.all([
+        fetch(reposUrl).then(function(r) { return r.ok ? r.json() : Promise.reject(r.status); }),
+        fetch(userUrl).then(function(r)  { return r.ok ? r.json() : null; }).catch(function() { return null; })
+      ])
+      .then(function(results) {
+        var repos = results[0];
+        var user  = results[1];
+
+        // 1. 更新使用者 Profile
+        if (user) {
+          updateElement('user-name', user.name || USERNAME);
+          updateElement('user-bio', user.bio || '探索 AI 代理與網頁技術的開發者。');
+          loadAvatar(user.avatar_url);
+        } else {
+          updateElement('user-name', USERNAME);
+          updateElement('user-bio', FALLBACK.user.bio);
+          loadAvatar(FALLBACK.user.avatar_url);
+        }
+
+        // 2. 計算總 Stars 數
+        var totalStars = 0;
+        repos.forEach(function(r) { totalStars += (r.stargazers_count || 0); });
+        updateElement('stat-stars', totalStars);
+        updateElement('stat-repos', repos.length);
+
+        // 3. 計算程式語言數量
+        var uniqueLangs = new Set();
+        repos.forEach(function(r) { if (r.language) uniqueLangs.add(r.language); });
+        updateElement('stat-langs', uniqueLangs.size || 1);
+
+        // 4. 更新已知精選卡片的即時數據
+        var matchedRepoNames = [];
+        repos.forEach(function(repo) {
+          if (KNOWN_REPOS.indexOf(repo.name) !== -1) {
+            matchedRepoNames.push(repo.name);
+            updateElement('stars-' + repo.name, repo.stargazers_count);
+            updateElement('forks-' + repo.name, repo.forks_count);
+            updateElement('desc-' + repo.name, repo.description || FALLBACK[repo.name].desc);
+          }
+        });
+
+        // 處理 API 沒撈到特定已知 Repo 的情況（可能設為 private）
+        KNOWN_REPOS.forEach(function(name) {
+          if (matchedRepoNames.indexOf(name) === -1) {
+            updateElement('stars-' + name, FALLBACK[name].stars);
+            updateElement('forks-' + name, FALLBACK[name].forks);
+            updateElement('desc-' + name, FALLBACK[name].desc);
+          }
+        });
+
+        // 5. 渲染程式語言比例分布條
+        renderLangsDistribution(repos);
+
+        // 6. 動態渲染「其他儲存庫」 (實現「每個儲存庫都要介紹」)
+        var otherRepos = repos.filter(function(r) {
+          return KNOWN_REPOS.indexOf(r.name) === -1 && !r.fork;
+        });
+
+        if (otherRepos.length > 0) {
+          var otherGrid = q('other-repos-grid');
+          var otherSection = q('other-repos-section');
+          if (otherGrid && otherSection) {
+            var genericCardsHtml = '';
+            otherRepos.forEach(function(repo) {
+              genericCardsHtml += createGenericCard(repo);
+            });
+            otherGrid.innerHTML = genericCardsHtml;
+            otherSection.style.display = 'block';
+          }
+        }
+
+        setStatus('online', '已同步 GitHub API 即時資料');
+      })
+      .catch(function(err) {
+        console.warn('[EMAILYS Portfolio] GitHub API 無法取得資料，正在載入備份資料：', err);
+        useFallback();
+      });
+    })();
+  </script>
+</body>
+</html>
